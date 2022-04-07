@@ -51,7 +51,7 @@ const dropzoneChildren = (status: DropzoneStatus, theme: MantineTheme) => (
         Drag your origin image here
       </Text>
       <Text size="sm" color="dimmed" inline mt={7}>
-        File must be .bmp format and size less than 5 MB.
+        File must be .bmp format and size less than 10 MB.
       </Text>
     </div>
   </Group>
@@ -63,9 +63,11 @@ function App() {
   const [step, setStep] = useState(0);
   const [level, setLevel] = useState(2);
   const [ratio, setRatio] = useState(10);
+  const [isUploading, setUploading] = useState(false);
   const [isLoadingImage, setLoadingImage] = useState(false);
 
   async function upload(files: File[]) {
+    setUploading(true);
     try {
       const body = new FormData();
       body.append('image', files[0]);
@@ -83,6 +85,8 @@ function App() {
         title: 'Default notification',
         message: 'Hey there, your code is awesome! 🤥',
       })
+    } finally {
+      setUploading(false);
     }
   }
 
@@ -126,8 +130,15 @@ function App() {
         {!id && <div>
             <Dropzone
                 onDrop={upload}
-                onReject={(files) => console.log('rejected files', files)}
-                maxSize={3 * 1024 ** 2}
+                loading={isUploading}
+                onReject={() => {
+                  showNotification({
+                    color: 'red',
+                    title: 'Upload failed',
+                    message: 'File rejected, please upload a .bmp file which less than 10 MB',
+                  });
+                }}
+                maxSize={10 * 1024 ** 2}
                 mb={24}
                 accept={['image/bmp']}
             >
@@ -149,7 +160,7 @@ function App() {
                 placeholder={<Loader />}
                 height="50vh"
                 fit="contain"
-                src={`https://api.haar.linyuanlin.com/download?uid=${id}&step=${step}&level=${level}&ratio=${ratio}`}
+                src={`https://api.haar.linyuanlin.com/visualization?uid=${id}&step=${step}&level=${level}&ratio=${ratio}`}
                 alt="" />
             <Grid justify="space-between" mt={16}>
                 <Grid.Col span={4}>
