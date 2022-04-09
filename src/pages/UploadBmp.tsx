@@ -20,6 +20,7 @@ import {
 } from "tabler-icons-react";
 import { showNotification } from "@mantine/notifications";
 import { Page } from "../App";
+import API_URL from "../config";
 
 function UploadBmp({ setPage }: { setPage(page: Page): void }) {
   const theme = useMantineTheme();
@@ -35,8 +36,7 @@ function UploadBmp({ setPage }: { setPage(page: Page): void }) {
     try {
       const body = new FormData();
       body.append('image', files[0]);
-      const res = await fetch('https://api.haar.linyuanlin.com/upload',
-        { method: 'POST', body });
+      const res = await fetch(API_URL + '/upload', { method: 'POST', body });
       const parsed = await res.json();
       showNotification({
         title: '上传成功',
@@ -60,7 +60,7 @@ function UploadBmp({ setPage }: { setPage(page: Page): void }) {
 
   async function download() {
     try {
-      const res = await fetch(`https://api.haar.linyuanlin.com/compressed?uid=${id}&level=${level}&step=${step}&ratio=${ratio}`);
+      const res = await fetch(API_URL + `/compressed?uid=${id}&level=${level}&step=${step}&ratio=${ratio}`);
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -155,7 +155,7 @@ function UploadBmp({ setPage }: { setPage(page: Page): void }) {
                   placeholder={<Loader />}
                   height="50vh"
                   fit="contain"
-                  src={`https://api.haar.linyuanlin.com/visualization?uid=${id}&step=${step}&level=${level}&ratio=${ratio}`}
+                  src={API_URL + `/visualization?uid=${id}&step=${step}&level=${level}&ratio=${ratio}`}
                   alt="" />
               <Grid justify="space-between" mt={16}>
                   <Grid.Col span={4}>

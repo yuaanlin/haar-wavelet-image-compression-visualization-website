@@ -13,6 +13,7 @@ import { ComponentProps, useState } from "react";
 import { Icon as TablerIcon, Photo, Upload, X } from "tabler-icons-react";
 import { showNotification } from "@mantine/notifications";
 import { Page } from "../App";
+import API_URL from "../config";
 
 function UploadCompressed({ setPage }: { setPage(page: Page): void }) {
   const theme = useMantineTheme();
@@ -32,8 +33,10 @@ function UploadCompressed({ setPage }: { setPage(page: Page): void }) {
     try {
       const body = new FormData();
       body.append('compressed', files[0]);
-      const res = await fetch('https://api.haar.linyuanlin.com/decompress',
-        { method: 'POST', body });
+      const res = await fetch(API_URL + '/decompress', {
+        method: 'POST',
+        body
+      });
       const bmp = await res.blob();
       const url = URL.createObjectURL(bmp);
       setUrl(url);
