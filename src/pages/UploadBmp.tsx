@@ -37,17 +37,14 @@ function UploadBmp({ setPage }: { setPage(page: Page): void }) {
       const body = new FormData();
       body.append('image', files[0]);
       const res = await fetch(API_URL + '/upload', { method: 'POST', body });
+      if (res.status !== 201) throw new Error('Upload failed');
       const parsed = await res.json();
-      showNotification({
-        title: '上传成功',
-        message: 'uid 为 ' + parsed.id,
-      })
       setId(parsed.id);
     } catch (err) {
       showNotification({
         color: 'red',
-        title: 'Default notification',
-        message: 'Hey there, your code is awesome! 🤥',
+        title: 'Error occurred',
+        message: 'There is an error occurred while processing your image, please try another image or open an issue on GitHub.'
       })
     } finally {
       setUploading(false);
